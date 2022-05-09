@@ -2,13 +2,16 @@ package com.lizuo.pointcloud.controller;
 
 import com.lizuo.pointcloud.pojo.model.CloudPoint;
 import com.lizuo.pointcloud.service.CloudService;
+import com.lizuo.pointcloud.util.DownloadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Controller
@@ -44,15 +47,15 @@ public class CloudController {
     @ResponseBody
     @GetMapping("/show2")
     @CrossOrigin(origins = "*")
-    public CloudPoint show2(String category) throws IOException {
+    public CloudPoint show2(String category,int page) throws IOException {
         String subdir = "classification/";
-        return cloudService.getCloud2(category,subdir);
+        return cloudService.getCloud2(category,page,subdir);
     }
 
     @ResponseBody
     @GetMapping("/retrieval2")
     @CrossOrigin(origins = "*")
-    public CloudPoint retrieval2(int pc) throws IOException {
+    public CloudPoint retrieval2(int pc,int page) throws IOException {
         String cloudcategory = new String();
         String subdir = "retrieval/";
         switch (pc){
@@ -62,6 +65,35 @@ public class CloudController {
             case 4:cloudcategory = "sofa";
             case 5:cloudcategory = "toilet";
         }
-        return cloudService.getCloud2(cloudcategory,subdir);
+        return cloudService.getCloud2(cloudcategory,page,subdir);
+    }
+
+    @ResponseBody
+    @GetMapping("/download")
+    @CrossOrigin(origins = "*")
+    public void download(String category, int page, int num,HttpServletResponse response) throws Throwable {
+        String number = String.valueOf((page-1)*6+num);
+        String dir = "/home/lizuo/data/pointconv_pytorch-master/pointcloud/"+category+"/"+category+number+".txt";
+        File file = new File("D:\\Downloads\\xbox.txt");
+        if (!file.exists()) {
+            return;
+        }
+        response.reset();
+        response.setContentType("application/octet-stream");
+        response.setCharacterEncoding("utf-8");
+        response.setContentLength((int) file.length());
+        // 设置编码格式
+        response.setHeader("Content-Disposition",
+                "attachment;fileName=" + URLEncoder.encode(file.getName(), "UTF-8"));
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+        byte[] buff = new byte[1024];
+        OutputStream os = response.getOutputStream();
+        int i = 0;
+        while ((i = bis.read(buff)) != -1) {
+            os.write(buff, 0, i);
+            os.flush();
+        }
+        bis.close();
+        os.close();
     }
 }

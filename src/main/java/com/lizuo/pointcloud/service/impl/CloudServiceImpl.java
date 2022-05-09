@@ -44,8 +44,9 @@ public class CloudServiceImpl implements CloudService {
 
     @Override
     @Cacheable(value = "cloudpoint")
-    public CloudPoint getCloud2(String cloudcategory, String subdir) throws IOException {
-        String dir = "/home/lizuo/data/pointconv_pytorch-master/system/"+subdir+cloudcategory;
+    public CloudPoint getCloud2(String cloudcategory,int page, String subdir) throws IOException {
+//        String dir = "/home/lizuo/data/pointconv_pytorch-master/system/"+subdir+cloudcategory;
+        String dir = "D:\\Downloads\\"+cloudcategory;
         String filedir = dir+".txt";
         String encoding="GBK";
         File file=new File(filedir);
@@ -54,7 +55,12 @@ public class CloudServiceImpl implements CloudService {
             InputStreamReader read = new InputStreamReader(new FileInputStream(file), encoding);
             BufferedReader bufferedReader = new BufferedReader(read);
             String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
+            for(int i=0;i<(page-1)*6;i++){
+                for(int j=0;j<2048;j++){
+                    bufferedReader.readLine();
+                }
+            }
+            for(int flag = 0 ;(line = bufferedReader.readLine()) != null&&flag<6;flag++) {
                 List<List<String>> cloud = new ArrayList<>();
                 cloud.add(Arrays.asList(line.split(" ")));
                 for(int i = 0;i<2047;i++){
@@ -64,7 +70,6 @@ public class CloudServiceImpl implements CloudService {
                 }
                 cloudpoint.add(cloud);
             }
-
             read.close();
         }
         CloudPoint cp = new CloudPoint();

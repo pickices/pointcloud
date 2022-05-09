@@ -10,5 +10,5 @@ import java.util.List;
 public interface CloudService {
     List<List<List<String>>> getCloud(String cloudcategory, String subdir) throws IOException;
 
-    CloudPoint getCloud2(String cloudcategory, String subdir) throws IOException;
+    CloudPoint getCloud2(String cloudcategory, int page, String subdir) throws IOException;
 }
