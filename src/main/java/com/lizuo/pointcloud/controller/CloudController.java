@@ -63,9 +63,38 @@ public class CloudController {
     @ResponseBody
     @GetMapping("/classdownload")
     @CrossOrigin(origins = "*")
-    public void download(String category, int page, int num,HttpServletResponse response) throws Throwable {
+    public void classDownload(String category, int page, int num,HttpServletResponse response) throws Throwable {
         String number = String.valueOf((page-1)*6+num);
-        String dir = "/home/lizuo/data/pointconv_pytorch-master/system/classification/"+category+"/"+category+number+".txt";
+        String dir = "/home/lizuo/data/pointconv_pytorch-master/system/classification/"+category+"/"+category+number+".ply";
+        File file = new File(dir);
+        if (!file.exists()) {
+            return;
+        }
+        response.reset();
+        response.setContentType("application/octet-stream");
+        response.setCharacterEncoding("utf-8");
+        response.setContentLength((int) file.length());
+        // 设置编码格式
+        response.setHeader("Content-Disposition",
+                "attachment;fileName=" + URLEncoder.encode(file.getName(), "UTF-8"));
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+        byte[] buff = new byte[1024];
+        OutputStream os = response.getOutputStream();
+        int i = 0;
+        while ((i = bis.read(buff)) != -1) {
+            os.write(buff, 0, i);
+            os.flush();
+        }
+        bis.close();
+        os.close();
+    }
+
+    @ResponseBody
+    @GetMapping("/retrievaldownload")
+    @CrossOrigin(origins = "*")
+    public void retrievalDownload(String category, int page, int num,HttpServletResponse response) throws Throwable {
+        String number = String.valueOf((page-1)*6+num);
+        String dir = "/home/lizuo/data/pointconv_pytorch-master/system/retrieval/"+category+"/"+category+number+".ply";
         File file = new File(dir);
         if (!file.exists()) {
             return;
