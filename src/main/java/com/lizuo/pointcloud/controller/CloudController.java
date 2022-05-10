@@ -55,26 +55,18 @@ public class CloudController {
     @ResponseBody
     @GetMapping("/retrieval2")
     @CrossOrigin(origins = "*")
-    public CloudPoint retrieval2(int pc,int page) throws IOException {
-        String cloudcategory = new String();
+    public CloudPoint retrieval2(String cloudcategory,int page) throws IOException {
         String subdir = "retrieval/";
-        switch (pc){
-            case 1:cloudcategory = "airplane";
-            case 2:cloudcategory = "chair";
-            case 3:cloudcategory = "guitar";
-            case 4:cloudcategory = "sofa";
-            case 5:cloudcategory = "toilet";
-        }
         return cloudService.getCloud2(cloudcategory,page,subdir);
     }
 
     @ResponseBody
-    @GetMapping("/download")
+    @GetMapping("/classdownload")
     @CrossOrigin(origins = "*")
     public void download(String category, int page, int num,HttpServletResponse response) throws Throwable {
         String number = String.valueOf((page-1)*6+num);
-        String dir = "/home/lizuo/data/pointconv_pytorch-master/pointcloud/"+category+"/"+category+number+".txt";
-        File file = new File("D:\\Downloads\\xbox.txt");
+        String dir = "/home/lizuo/data/pointconv_pytorch-master/system/classification/"+category+"/"+category+number+".txt";
+        File file = new File(dir);
         if (!file.exists()) {
             return;
         }

@@ -45,8 +45,8 @@ public class CloudServiceImpl implements CloudService {
     @Override
     @Cacheable(value = "cloudpoint")
     public CloudPoint getCloud2(String cloudcategory,int page, String subdir) throws IOException {
-//        String dir = "/home/lizuo/data/pointconv_pytorch-master/system/"+subdir+cloudcategory;
-        String dir = "D:\\Downloads\\"+cloudcategory;
+        String dir = "/home/lizuo/data/pointconv_pytorch-master/system/"+subdir+cloudcategory;
+//        String dir = "D:\\Downloads\\"+cloudcategory;
         String filedir = dir+".txt";
         String encoding="GBK";
         File file=new File(filedir);
